@@ -8,5 +8,6 @@ else
 	else
 		cat $1 | bf2c > $2.c
 		gcc $2.c -o $2
+		rm $2.c
 	fi
 fi
