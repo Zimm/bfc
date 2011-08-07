@@ -9,3 +9,11 @@ Feel free to use and distribute but pl0x use my name
 
 Thanks
 
+SCRIPTS
+=======
+
+doit.sh will install everything necessary, create a hello world program in brainfuck, compile it and then run it
+setup.sh will update the submodules if necessary, and proceed to install bf2c
+install.sh will install bfc - can take one parameter for a prefix ex: install.sh /bin/
+uninstall.sh will uninstall bfc (note not bf2c) - can take one parameter ex: uninstall.sh /bin/
+
