@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ -z $1 ]; then
+	echo "Usage: bfc file output"
+else
+	if [ -z $2 ]; then
+		echo "Usage: bfc file output"
+	else
+		cat $1 | bf2c > $2.c
+		gcc $2.c -o $2
+	fi
+fi
