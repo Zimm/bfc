@@ -1,8 +1,2 @@
-*.o
-*.so
 .DS_Store
-autom4te.cache
-.deps
-config.*
-Makefile
-bf2c
+helloworld*

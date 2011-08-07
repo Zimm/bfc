@@ -1,0 +1,3 @@
+[submodule "bf2c"]
+	path = bf2c
+	url = git://github.com/Zimm/bf2c.git

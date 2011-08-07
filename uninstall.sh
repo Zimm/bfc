@@ -12,7 +12,7 @@ if [ $1 ]; then
         prefix=$1
 fi
 
-echo "Uninstalling from $prefix...."
+echo "Uninstalling from $prefix.... (will ask for root (or admin on osx) pass so I can properly uninstall from the system)"
 
 sudo rm ${prefix}bfc
 
