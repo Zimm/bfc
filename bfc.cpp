@@ -16,7 +16,7 @@ char *_buffer;
 const char *_header = "#include <stdio.h>\nchar mem[30000];\nint main(int argc, char **argv) {\n\tchar *buffer = mem;\0";
 
 //easier to see if i put them in {}
-const char *validChars = "><.,[]+-\n\r\0";
+const char *validChars = "><.,[]+-*\n\r\0";
 
 char *movePointer(int teller) {
 	return teller > 0 ? (char *)"++buffer;\0" : (char *)"--buffer;\0";
@@ -43,6 +43,10 @@ char *changePointer(int teller) {
  	return teller > 0 ? (char *)"++*buffer;\0" : (char *)"--*buffer;\0";       
 }
 
+char *pointerRandom() {
+	return (char *)"*buffer = arc4random() % 255;";
+}
+
 char *errorCommand() {
 	return (char *)"poop\0";
 }
@@ -53,6 +57,12 @@ char *createFileBuffer(char *buffer, int *length) {
 	unsigned int place = 0;
 	unsigned int brackets = 0;
 	while (place < (unsigned)strlen(buffer)) {
+		
+		result += "\n";
+                result += "\t";
+                for (int i = 0; i < brackets; i++) {
+                        result += "\t";
+                }
 
 		char *command;
 		
@@ -84,16 +94,14 @@ char *createFileBuffer(char *buffer, int *length) {
 			case '-':
 				command = changePointer(-1);
 				break;
+			case '*':
+				command = pointerRandom();
+				break;
 			default:
-				command = "\n\0";
+				command = "\n";
 				break;
 		}
 
-		result += "\n";
-		result += "\t";
-		for (int i = 0; i < brackets; i++) {
-			result += "\t";
-		}
 		result += command;
 		place++;
 	}
@@ -234,8 +242,6 @@ int main(int argc, char **argv) {
 
 	}
 	
-	wait(-1);
-
 	delete _file;
 	delete _out;
 	delete tmpCFile;
