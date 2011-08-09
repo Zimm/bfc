@@ -2,10 +2,7 @@
 
 prefix=/usr/bin/
 
-if [ -z `which bf2c` ]; then
-	echo "Either manually install bf2c or run ./setup.sh"
-	exit 1
-fi
+if [ -e "./build/bfc" ]; then
 
 if [ $2 ]; then
 	echo "Usage: $0 [prefix]"
@@ -19,7 +16,11 @@ fi
 
 echo "Installing into $prefix.... (will ask for root (or admin on osx) pass so I can properly install into the system)"
 
-sudo cp ./bfc $prefix
+sudo cp ./build/bfc $prefix
 
 echo "Installed!"
+else
+echo "Please run ./compile.sh first then run this, or just run ./doit.sh"
+exit 1
+fi
 

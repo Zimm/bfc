@@ -1,2 +1,4 @@
 .DS_Store
 helloworld*
+build
+.*.c
