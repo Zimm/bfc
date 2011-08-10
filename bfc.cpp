@@ -16,7 +16,7 @@ char *_buffer;
 const char *_header = "#include <stdio.h>\nchar mem[30000];\nint main(int argc, char **argv) {\n\tchar *buffer = mem;\0";
 
 //easier to see if i put them in {}
-const char *validChars = "><.,[]+-*\n\r\0";
+const char *validChars = "><.,[]+-*:{0123456789}\n\r\0";
 
 char *movePointer(int teller) {
 	return teller > 0 ? (char *)"++buffer;\0" : (char *)"--buffer;\0";
@@ -45,6 +45,18 @@ char *changePointer(int teller) {
 
 char *pointerRandom() {
 	return (char *)"*buffer = arc4random() % 255;";
+}
+
+char *moveTo(char *where) {
+	string result("buffer = mem;\n");
+	result += "buffer += ";
+	result += where;
+	result += ";";
+	return (char *)result.c_str();
+}
+
+char *printIntPointer() {
+	return (char *)"printf(\"%i\", *buffer);";	
 }
 
 char *errorCommand() {
@@ -97,6 +109,18 @@ char *createFileBuffer(char *buffer, int *length) {
 			case '*':
 				command = pointerRandom();
 				break;
+			case '{': {
+				string where("");
+				place++;
+				while (buffer[place] != '}') {
+					where += buffer[place++];
+				}
+				command = moveTo((char *)where.c_str());
+				break;
+			}
+			case ':':
+				command = printIntPointer();
+				break;
 			default:
 				command = "\n";
 				break;
@@ -124,6 +148,8 @@ void parse(char *buffer) {
 	unsigned int place = 0;
 	
 	int brackets = 0;
+
+	int curlyBrackets = 0;
 	
 	while (place < strl) {
 		
@@ -135,14 +161,41 @@ void parse(char *buffer) {
 				break;
 			}
 		}
+		switch (c) {
+                        case '[':
+                                brackets++;
+                                break;
+                        case ']':
+                                brackets--;
+                                break;
+                        case '{':
+                                curlyBrackets++;
+                                break;
+                        case '}':
+                                curlyBrackets--;
+                                break;
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				if (curlyBrackets <= 0) {
+					cout << "Expected { before " << c << endl;
+					valid = false;
+				}
+			default:
+				break;
+		}
+
 		if (!valid) {
 			cout << "Invalid char " << c << " at place " << place << endl;
 			exit(1);	
 		}
-		if (c == '[')
-			brackets++;
-		else if (c == ']')
-			brackets--;
 		place++;
 	}
 	
