@@ -205,14 +205,20 @@ void parse(char *buffer) {
 	}
 }
 
-void printhelp() {
-	cout << "help has yet to be written" << endl;
+void printhelp(char *me) {
+	cout << "bfc:" << endl;
+	cout << "\tThe new age brainfuck compiler!" << endl;
+	cout << "\tbfc supports the original brainfuck language as well as a newer branfuck++ language being worked on by danzimm" << endl;
+	cout << endl;
+	cout << "Usage:" << endl;
+	cout << "\t" << me << " [input.bf] [outbin]" << endl;
+	cout << endl;
 }
 
 int main(int argc, char **argv) {
 
 	if (argc - 1 != 2) {
-		printhelp();
+		printhelp(argv[0]);
 		exit(1);
 	}
 	
@@ -252,14 +258,24 @@ int main(int argc, char **argv) {
 	
 	char *fileBuffer = createFileBuffer(_buffer, &length);
 
-	cout << "Got file buffer" << endl;
-
 	FILE *outFile;
 	
-	char *tmpCFile = new char[strlen(_out)+3+1];
-	
-	tmpCFile[0] = '.';
-	int place = 0;
+	time_t time_ = time(NULL);
+	int t_length = 0;
+	int upper = 1;
+	while (time_ % upper != time_) {
+		upper *= 10;
+		t_length++;
+	}
+
+	char *tmpCFile = new char[strlen(_out)+3+1+t_length+5];
+	tmpCFile[0] = '/';
+	tmpCFile[1] = 't';
+	tmpCFile[2] = 'm';
+	tmpCFile[3] = 'p';
+	tmpCFile[4] = '/';
+	tmpCFile[5] = '.';
+	int place = 5+ sprintf(tmpCFile+0x6,"%d",time_);
 	for (unsigned int i=0; i < (unsigned)strlen(_out); i++) {
 		tmpCFile[++place] = _out[i];
 	}
@@ -268,7 +284,7 @@ int main(int argc, char **argv) {
 	tmpCFile[++place] = '\0';
 
 	if (!(outFile = fopen(tmpCFile, "w+"))) {
-		cout << "Could not open " << _out << " for writing" << endl;
+		cout << "Could not open " << tmpCFile << " for writing" << endl;
 		exit(1);
 	}
 
