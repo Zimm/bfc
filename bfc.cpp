@@ -44,7 +44,7 @@ char *changePointer(int teller) {
 }
 
 char *pointerRandom() {
-	return (char *)"*buffer = arc4random() % 255;";
+	return (char *)"*buffer = arc4random() % 128;";
 }
 
 char *moveTo(char *where) {
@@ -206,27 +206,38 @@ void parse(char *buffer) {
 }
 
 void printhelp(char *me) {
+	cout << endl;
 	cout << "bfc:" << endl;
 	cout << "\tThe new age brainfuck compiler!" << endl;
 	cout << "\tbfc supports the original brainfuck language as well as a newer branfuck++ language being worked on by danzimm" << endl;
 	cout << endl;
 	cout << "Usage:" << endl;
-	cout << "\t" << me << " [input.bf] [outbin]" << endl;
+	cout << "\t" << me << " [input.bf] [outbin] <flags>" << endl;
+	cout << endl;
+	cout << "\tFlags are sent directly to gcc for processing" << endl;
 	cout << endl;
 }
 
 int main(int argc, char **argv) {
 
-	if (argc - 1 != 2) {
+	if (argc - 1 < 2) {
 		printhelp(argv[0]);
 		exit(1);
 	}
+	
+	int i;
+	string gccflags = "";
 	
 	_file = new char[strlen(argv[1])];
 	strcpy(_file, argv[1]);
 	_out = new char[strlen(argv[2])];
 	strcpy(_out, argv[2]);
 	
+	for (i = 3; i < argc; i++) {
+		gccflags += " ";
+		gccflags += argv[i];
+	}
+
 	struct stat st;
 
 	if (stat(_file, &st) != 0) {
@@ -278,6 +289,9 @@ int main(int argc, char **argv) {
 	int place = 5+ sprintf(tmpCFile+0x6,"%d",time_);
 	for (unsigned int i=0; i < (unsigned)strlen(_out); i++) {
 		tmpCFile[++place] = _out[i];
+		if (tmpCFile[place-1] == '/') {
+			tmpCFile[place-1] = '_';
+		}
 	}
 	tmpCFile[++place] = '.';
 	tmpCFile[++place] = 'c';
@@ -306,6 +320,7 @@ int main(int argc, char **argv) {
 		command += " ";
 		command += "-o ";
 		command += _out;
+		command += gccflags;
 
 		system(command.c_str());
 
